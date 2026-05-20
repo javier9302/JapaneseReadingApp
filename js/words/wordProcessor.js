@@ -1,0 +1,90 @@
+import {
+  loadUserData,
+  saveWord
+} from "../storage/localStorage.js";
+
+import {
+  fetchWordFromJisho
+} from "./jisho.js";
+
+import {
+  WORD_OCCURRENCE
+} from "../models/WORDS.js";
+
+import { delay } from "../utils/helpers.js";
+
+
+export async function processTextWords(textData){
+
+  const processed = new Set();
+
+  for(const sentence of textData.content){
+
+    for(const word of sentence.words){
+
+      await processWord(word, processed);
+
+    }
+
+  }
+
+}
+
+
+async function processWord(word, processed){
+
+  const dictionaryForm =
+    word.rootWord || word.surface;
+
+  const key =
+    `${dictionaryForm}-${word.reading}`;
+
+  if(processed.has(key)) return;
+
+  processed.add(key);
+
+  const userData = loadUserData();
+
+  const exists = userData.words.find(
+    w =>
+      w.dictionaryForm === dictionaryForm &&
+      w.reading === word.reading
+  );
+
+  if(exists) return;
+
+  const jishoData =
+    await fetchWordFromJisho(dictionaryForm);
+
+  if(!jishoData) return;
+
+  const newWord = createWord(jishoData);
+
+  saveWord(newWord);
+
+  await delay(1000);
+}
+
+
+function createWord(jishoData){
+
+  const j = jishoData.japanese[0];
+  const s = jishoData.senses[0];
+
+  return {
+    id: crypto.randomUUID(),
+
+    dictionaryForm: j.word || j.reading || "",
+
+    reading: j.reading || "",
+
+    meaning: s.english_definitions?.join(", ") || "",
+
+    jlpt: jishoData.jlpt?.[0] || "",
+
+    tags: jishoData.tags || [],
+
+    partOfSpeech: s.parts_of_speech || []
+  };
+
+}
