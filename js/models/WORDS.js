@@ -76,6 +76,7 @@ export const WORD = {
 // =========================
 
 export const WORD_OCCURRENCE = {
+  
   surface: "",
 
   reading: "",

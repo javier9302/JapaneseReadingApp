@@ -9,7 +9,6 @@ export function saveUserData(userData){
 
 }
 
-
 export function loadUserData(){
 
   const savedData =
@@ -43,6 +42,12 @@ export function saveTextData(textData){
 
   const userData =
     loadUserData();
+
+  const exists = userData.texts.some(t =>
+    t.id === textData.id
+  );
+
+  if (exists) return;
 
   userData.texts.push(textData);
 

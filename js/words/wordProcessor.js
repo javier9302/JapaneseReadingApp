@@ -14,10 +14,13 @@ import {
 import { delay } from "../utils/helpers.js";
 
 
+
 export async function processTextWords(textData){
-
+  const userData=loadUserData()
+  const id=userData.texts[0].id
+  
   const processed = new Set();
-
+  
   for(const sentence of textData.content){
 
     for(const word of sentence.words){
@@ -32,7 +35,7 @@ export async function processTextWords(textData){
 
 
 async function processWord(word, processed){
-
+  console.log(word)
   const dictionaryForm =
     word.rootWord || word.surface;
 
@@ -55,7 +58,7 @@ async function processWord(word, processed){
 
   const jishoData =
     await fetchWordFromJisho(dictionaryForm);
-
+  
   if(!jishoData) return;
 
   const newWord = createWord(jishoData);
@@ -70,9 +73,15 @@ function createWord(jishoData){
 
   const j = jishoData.japanese[0];
   const s = jishoData.senses[0];
+  const word = j.word || null;
+  const reading = j.reading || "";
+
+  const isParticle = !word; // important rule
 
   return {
-    id: crypto.randomUUID(),
+    id: isParticle
+      ? `particle_${reading}`
+      : `${word}_${reading}`,
 
     dictionaryForm: j.word || j.reading || "",
 

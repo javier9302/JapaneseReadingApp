@@ -1,6 +1,7 @@
 import express from "express";
 import fs from "fs";
 import cors from "cors";
+import path from "path";
 
 const app = express();
 const PORT = 3000;
@@ -42,17 +43,22 @@ app.get("/search-word", async (req, res) => {
 // 2. SYNC WORDS TO JSON DB
 // =========================
 app.post("/sync-words", (req, res) => {
-
+console.log("SYNC HIT");
   try {
 
     const incomingWords = req.body.words || [];
 
-    const filePath = "./words-db.json";
+    const filePath = path.resolve(
+  "js/data/user-data.json"
+);
 
-    const db = JSON.parse(
-      fs.readFileSync(filePath, "utf-8")
-    );
+   let db;
 
+try {
+  db = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+} catch (err) {
+  db = { words: [] };
+}
     if (!db.words) db.words = [];
 
     let added = 0;

@@ -57,16 +57,11 @@ async function handleSubmit() {
 
     // 1. process words (updates localStorage.words indirectly)
     await processTextWords(textData);
-
-    // 2. sync AFTER words are processed
-    await syncWordsToServer();
+    
 
   }
 
-  catch (error) {
-
-    console.error(error);
-
+  catch (error) {   
     textContainer.textContent = "Invalid JSON.";
   }
 }
