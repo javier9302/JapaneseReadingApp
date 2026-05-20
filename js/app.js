@@ -56,7 +56,7 @@ async function handleSubmit() {
     saveTextData(textData);
 
     // 1. process words (updates localStorage.words indirectly)
-    await processTextWords(textData);
+    await processTextWords(textData, userData);
     
 
   }

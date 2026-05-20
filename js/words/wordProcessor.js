@@ -15,9 +15,16 @@ import { delay } from "../utils/helpers.js";
 
 
 
-export async function processTextWords(textData){
-  const userData=loadUserData()
-  const id=userData.texts[0].id
+export async function processTextWords(textData,userData){
+  
+  const id=textData.id
+  const exists=userData.texts.some(
+    text=> text.id === textData.id
+  );
+  if(exists){
+    console.log("Story already exists. Skipping.");
+    return;
+  }
   
   const processed = new Set();
   
