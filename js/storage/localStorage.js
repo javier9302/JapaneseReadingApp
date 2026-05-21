@@ -1,68 +1,162 @@
-export const STORAGE_KEY = "USER_DATA";
+// =========================
+// Sync user data route
+// =========================
 
-export function saveUserData(userData){
+app.post(
+  "/sync-user-data",
+  (req, res) => {
 
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(userData)
-  );
+    try{
 
-}
+      // Data received from frontend
+      const incomingData =
+        req.body;
 
-export function loadUserData(){
+      // JSON file path
+      const filePath =
+        path.resolve(
+          "js/data/user-data.json"
+        );
 
-  const savedData =
-    localStorage.getItem(STORAGE_KEY);
+      let db;
 
-  if(savedData){
+      // Try reading existing JSON file
+      try{
 
-    return JSON.parse(savedData);
+        db = JSON.parse(
+          fs.readFileSync(
+            filePath,
+            "utf-8"
+          )
+        );
+
+      }
+
+      // If file does not exist
+      // create default structure
+      catch{
+
+        db = {
+
+          user: {
+            name: "",
+            createdAt: null
+          },
+
+          texts: [],
+
+          words: [],
+
+          wordMasteries: []
+
+        };
+
+      }
+
+      // =========================
+      // Sync TEXTS
+      // =========================
+
+      for(
+        const incomingText
+        of incomingData.texts
+      ){
+
+        // Check if story already exists
+        const exists =
+          db.texts.some(
+            text =>
+              text.id === incomingText.id
+          );
+
+        // If not found, add it
+        if(!exists){
+
+          db.texts.push(
+            incomingText
+          );
+
+        }
+
+      }
+
+
+      // =========================
+      // Sync WORDS
+      // =========================
+
+      for(
+        const incomingWord
+        of incomingData.words
+      ){
+
+        // Check duplicate word
+        const exists =
+          db.words.some(
+            word =>
+
+              word.dictionaryForm ===
+              incomingWord.dictionaryForm
+
+              &&
+
+              word.reading ===
+              incomingWord.reading
+          );
+
+        // Add only if missing
+        if(!exists){
+
+          db.words.push(
+            incomingWord
+          );
+
+        }
+
+      }
+
+
+      // =========================
+      // Save updated JSON file
+      // =========================
+
+      fs.writeFileSync(
+
+        filePath,
+
+        JSON.stringify(
+          db,
+          null,
+          2
+        )
+
+      );
+
+
+      // Success response
+      res.json({
+
+        success: true,
+
+        message:
+          "User data synced successfully"
+
+      });
+
+    }
+
+    catch(error){
+
+      console.error(error);
+
+      res.status(500).json({
+
+        error:
+          "Failed to sync user data"
+
+      });
+
+    }
 
   }
-
-  return {
-
-    user: {
-      name: "",
-      createdAt: null
-    },
-
-    texts: [],
-
-    words: [],
-
-    wordMasteries: []
-
-  };
-
-}
-
-
-export function saveTextData(textData){
-
-  const userData =
-    loadUserData();
-
-  const exists = userData.texts.some(t =>
-    t.id === textData.id
-  );
-
-  if (exists) return;
-
-  userData.texts.push(textData);
-
-  saveUserData(userData);
-
-}
-
-
-export function saveWord(newWord){
-
-  const userData =
-    loadUserData();
-
-  userData.words.push(newWord);
-
-  saveUserData(userData);
-
-}
+);

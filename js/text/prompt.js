@@ -1,24 +1,26 @@
 export const STORY_PROMPT = `
-Crea un texto en japonés en formato JSON.
+Create a Japanese text in JSON format.
 
-Configuración:
+Configuration:
 
-- Tamaño: historia media
-- Categoría: Viajes
-- Tipo de texto: story
-- Nivel gramatical JLPT: N4
+- Length: medium story
+- Category: Travel
+- Text type: story
+- JLPT grammar level: N4
 
-Reglas generales:
+General rules:
 
-- El texto debe seguir estrictamente el nivel gramatical indicado.
-- Puede usar vocabulario más avanzado si el contexto lo requiere.
-- Debe priorizar vocabulario simple y natural cuando sea posible.
-- Usa ortografía japonesa natural.
-- Prefiere kanji cuando sea comúnmente utilizado.
+- The ID must be random using UUID v4 format.
+- The text must strictly follow the specified grammar level.
+- More advanced vocabulary may be used if the context requires it.
+- Prioritize simple and natural vocabulary whenever possible.
+- Use natural Japanese spelling.
+- Prefer kanji when they are commonly used.
 
-La estructura JSON debe ser la siguiente:
+The JSON structure must be the following:
 
 {
+  "id":"",
   "title": {
     "original": "",
     "reading": "",
@@ -58,31 +60,31 @@ La estructura JSON debe ser la siguiente:
   ]
 }
 
-Reglas de estructura:
+Structure rules:
 
-- title.original debe contener el título en japonés.
-- title.reading debe estar completamente en hiragana.
-- title.translation debe contener la traducción al inglés.
+- title.original must contain the title in Japanese.
+- title.reading must be completely written in hiragana.
+- title.translation must contain the English translation.
 
-- original debe contener la oración completa en japonés.
-- translation debe contener la traducción al inglés.
+- original must contain the complete sentence in Japanese.
+- translation must contain the English translation.
 
-- words debe contener TODOS los tokens de la oración en orden.
-- Incluye partículas y auxiliares.
-- No omitas ningún token de la oración.
-- Al unir todos los surface en orden, debe reconstruirse correctamente la oración original.
+- words must contain ALL sentence tokens in order.
+- Include particles and auxiliary words.
+- Do not omit any sentence token.
+- Joining all surface values in order must correctly reconstruct the original sentence.
 
-Reglas de palabras:
+Word rules:
 
-- surface debe contener EXACTAMENTE la forma usada en la oración.
-- reading debe estar únicamente en hiragana.
-- rootWord debe contener la forma diccionario si la palabra está conjugada.
-- Si la palabra NO está conjugada, rootWord debe ser un string vacío.
+- surface must contain EXACTLY the form used in the sentence.
+- reading must be written only in hiragana.
+- rootWord must contain the dictionary form if the word is conjugated.
+- If the word is NOT conjugated, rootWord must be an empty string.
 
-Reglas finales:
+Final rules:
 
-- Devuelve únicamente JSON válido.
-- No incluyas explicaciones.
-- No uses markdown.
+- Return valid JSON only.
+- Do not include explanations.
+- Do not use markdown.
 
 `;

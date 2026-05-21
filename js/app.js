@@ -54,7 +54,10 @@ async function handleSubmit() {
     textContainer.textContent = fullText;
 
     saveTextData(textData);
-
+    console.log("TextData:")
+    console.log(textData)
+    console.log("UserData:")
+    console.log(userData)
     // 1. process words (updates localStorage.words indirectly)
     await processTextWords(textData, userData);
     

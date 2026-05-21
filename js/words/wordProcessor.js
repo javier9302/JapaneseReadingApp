@@ -21,6 +21,9 @@ export async function processTextWords(textData,userData){
   const exists=userData.texts.some(
     text=> text.id === textData.id
   );
+  console.log(textData.id)
+  console.log(userData.texts)
+  console.log(exists)
   if(exists){
     console.log("Story already exists. Skipping.");
     return;
@@ -42,13 +45,19 @@ export async function processTextWords(textData,userData){
 
 
 async function processWord(word, processed){
-  console.log(word)
   const dictionaryForm =
     word.rootWord || word.surface;
 
-  const key =
-    `${dictionaryForm}-${word.reading}`;
-
+  let key;
+    if (word.rootWord ){
+    key = `${dictionaryForm}`;
+    
+  }
+    else{
+      key= `${dictionaryForm}-${word.reading}` ;
+    } 
+    
+  console.log(processed)
   if(processed.has(key)) return;
 
   processed.add(key);
